@@ -18,7 +18,7 @@ import java.util.ArrayList;
     private ListView lista;
     private EditText poleTekstowe;
     private Button przyciskDodaj;
-    private     ArrayList<String> listaElementow = new ArrayList<>();
+    private ArrayList<String> listaElementow = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +28,15 @@ import java.util.ArrayList;
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+
+
+            });
+        lista = findViewById(R.id.lista);
+        poleTekstowe = findViewById(R.id.poleTekstowe);
+        przyciskDodaj = findViewById(R.id.przyciskDodaj);
+
+        przyciskDodaj.setOnClickListener(v -> {
+
         });
     }
 }
