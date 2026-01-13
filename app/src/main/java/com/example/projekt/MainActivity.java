@@ -1,10 +1,15 @@
         package com.example.projekt;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -51,5 +56,22 @@ public class MainActivity extends AppCompatActivity {
                 poleTekstowe.setText("");
             }
         });
+        // TODO: na 5 nacisniecie elementu listy i przekreslenie usumenice lub itp
+        lista.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        view.setBackgroundColor(Color.GRAY);
+                        TextView textView = (TextView) view;
+                        if(textView.getPaintFlags() == Paint.STRIKE_THRU_TEXT_FLAG){
+                            textView.setPaintFlags(0);
+                        }else {
+                            textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                        }
+                    }
+                }
+        );
+        // TODO: na 6 elementy listy sa obiektami
+        // od 1 do 100 dodawanie do listy
     }
 }
