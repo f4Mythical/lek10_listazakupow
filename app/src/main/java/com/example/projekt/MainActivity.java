@@ -1,14 +1,16 @@
-        package com.example.projekt;
+package com.example.projekt;
 
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private ListView lista;
     private EditText poleTekstowe;
     private Button przyciskDodaj;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> listaElementow = new ArrayList<>();
+    private Spinner spinner;
+    private TextView podsumowanie;
+    private ArrayAdapter<Item> adapter;
+    private ArrayList<Item> listaElementow = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,38 +44,84 @@ public class MainActivity extends AppCompatActivity {
         lista = findViewById(R.id.lista);
         poleTekstowe = findViewById(R.id.poleTekstowe);
         przyciskDodaj = findViewById(R.id.przyciskDodaj);
+        spinner = findViewById(R.id.spinner);
+        podsumowanie = findViewById(R.id.podsumowanie);
 
-        listaElementow.add("wyjscie do kina");
-        listaElementow.add("wyjscie do sklepu");
-        listaElementow.add("wyjscie do gdzies");
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.priorytet, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        listaElementow.add(new Item("wyjscie do kina", (byte)2));
+        listaElementow.add(new Item("wyjscie do sklepu", (byte)1));
+        listaElementow.add(new Item("wyjscie do gdzies", (byte)2));
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaElementow);
-        lista.setAdapter(adapter);
-
-        przyciskDodaj.setOnClickListener(v -> {
-            String tekst = poleTekstowe.getText().toString();
-            if (!tekst.isEmpty()) {
-                listaElementow.add(tekst);
-                adapter.notifyDataSetChanged();
-                poleTekstowe.setText("");
-            }
-        });
-        // TODO: na 5 nacisniecie elementu listy i przekreslenie usumenice lub itp
-        lista.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        view.setBackgroundColor(Color.GRAY);
-                        TextView textView = (TextView) view;
-                        if(textView.getPaintFlags() == Paint.STRIKE_THRU_TEXT_FLAG){
-                            textView.setPaintFlags(0);
-                        }else {
-                            textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listaElementow) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) super.getView(position, convertView, parent);
+                Item item = getItem(position);
+                if (item != null) {
+                    tv.setText(item.getName());
+                    if (Boolean.TRUE.equals(item.getCzyWykonane())) {
+                        tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        tv.setTextColor(Color.GRAY);
+                    } else {
+                        tv.setPaintFlags(tv.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        switch (item.getPriorytet()) {
+                            case 1:
+                                tv.setTextColor(0xFFFF0000);
+                                break;
+                            case 2:
+                                tv.setTextColor(0xFFFF8800);
+                                break;
+                            default:
+                                tv.setTextColor(0xFF000000);
+                                break;
                         }
                     }
                 }
-        );
-        // TODO: na 6 elementy listy sa obiektami
-        // od 1 do 100 dodawanie do listy
+                return tv;
+            }
+        };
+        lista.setAdapter(adapter);
+        aktualizujPodsumowanie();
+
+        przyciskDodaj.setOnClickListener(v -> {
+            String tekst = poleTekstowe.getText().toString().trim();
+            if (!tekst.isEmpty()) {
+                String sel = (String) spinner.getSelectedItem();
+                byte pri = 0;
+                try {
+                    pri = Byte.parseByte(sel);
+                } catch (Exception ignored) {}
+                listaElementow.add(new Item(tekst, pri));
+                adapter.notifyDataSetChanged();
+                poleTekstowe.setText("");
+                aktualizujPodsumowanie();
+            }
+        });
+
+        lista.setOnItemClickListener((parent, view, position, id) -> {
+            Item it = listaElementow.get(position);
+            it.setCzyWykonane(!it.getCzyWykonane());
+            adapter.notifyDataSetChanged();
+            aktualizujPodsumowanie();
+        });
+
+        lista.setOnItemLongClickListener((parent, view, position, id) -> {
+            listaElementow.remove(position);
+            adapter.notifyDataSetChanged();
+            aktualizujPodsumowanie();
+            return true;
+        });
+    }
+
+    private void aktualizujPodsumowanie() {
+        int pozostale = 0;
+        for (Item it : listaElementow) {
+            if (!Boolean.TRUE.equals(it.getCzyWykonane())) {
+                pozostale++;
+            }
+        }
+        podsumowanie.setText("Do zrobienia: " + pozostale);
     }
 }

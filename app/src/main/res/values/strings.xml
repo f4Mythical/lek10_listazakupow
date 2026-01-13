@@ -2,4 +2,10 @@
     <string name="app_name">projekt</string>
     <string name="dodaj">DODAJ</string>
     <string name="nowy_element">Nowy element</string>
+    <string-array name="priorytet">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+
+    </string-array>
 </resources>
