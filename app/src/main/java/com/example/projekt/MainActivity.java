@@ -18,6 +18,7 @@ import java.util.ArrayList;
     private ListView lista;
     private EditText poleTekstowe;
     private Button przyciskDodaj;
+    private ArrayAdapter<String> adapter;
     private ArrayList<String> listaElementow = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +35,8 @@ import java.util.ArrayList;
         lista = findViewById(R.id.lista);
         poleTekstowe = findViewById(R.id.poleTekstowe);
         przyciskDodaj = findViewById(R.id.przyciskDodaj);
-
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaElementow);
         przyciskDodaj.setOnClickListener(v -> {
-
         });
     }
 }
