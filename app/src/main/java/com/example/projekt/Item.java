@@ -2,7 +2,7 @@ package com.example.projekt;
 
 public class Item {
     private String name;
-    private Boolean czyWykonane; // do pokreslen idk
+    private Boolean czyWykonane;
     private byte priorytet;
 
     public Item(String name, byte priorytet) {
@@ -12,7 +12,7 @@ public class Item {
     }
 
     public Item(String name) {
-        this(name, (byte)1);
+        this(name, (byte) 1);
     }
 
     public byte getPriorytet() {
@@ -39,5 +39,8 @@ public class Item {
         this.name = name;
     }
 
-
+    @Override
+    public String toString() {
+        return name + " (" + priorytet + ")";
+    }
 }

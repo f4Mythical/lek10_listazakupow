@@ -47,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         podsumowanie = findViewById(R.id.podsumowanie);
 
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.priorytet, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
+                this, R.array.priorytet, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-        listaElementow.add(new Item("wyjscie do kina", (byte)2));
-        listaElementow.add(new Item("wyjscie do sklepu", (byte)1));
-        listaElementow.add(new Item("wyjscie do gdzies", (byte)2));
+
+        listaElementow.add(new Item("wyjście do kina", (byte) 2));
+        listaElementow.add(new Item("wyjście do sklepu", (byte) 1));
+        listaElementow.add(new Item("wyjście gdzieś", (byte) 2));
 
         adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listaElementow) {
             @Override
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) super.getView(position, convertView, parent);
                 Item item = getItem(position);
                 if (item != null) {
-                    tv.setText(item.getName());
+                    tv.setText(item.toString());
                     if (Boolean.TRUE.equals(item.getCzyWykonane())) {
                         tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         tv.setTextColor(Color.GRAY);
@@ -88,11 +90,7 @@ public class MainActivity extends AppCompatActivity {
         przyciskDodaj.setOnClickListener(v -> {
             String tekst = poleTekstowe.getText().toString().trim();
             if (!tekst.isEmpty()) {
-                String sel = (String) spinner.getSelectedItem();
-                byte pri = 0;
-                try {
-                    pri = Byte.parseByte(sel);
-                } catch (Exception ignored) {}
+                byte pri = Byte.parseByte((String) spinner.getSelectedItem());
                 listaElementow.add(new Item(tekst, pri));
                 adapter.notifyDataSetChanged();
                 poleTekstowe.setText("");
